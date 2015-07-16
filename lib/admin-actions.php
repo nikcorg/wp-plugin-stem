@@ -9,13 +9,36 @@ use Plugins\Boilerplate\Settings as Settings;
 
 
 /* There should be very little need to edit anything below this line */
-
+add_action("admin_init", __NAMESPACE__ . "\\enqueuePubResources");
 add_action("admin_notices", __NAMESPACE__ . "\\adminNotices");
 add_action("admin_menu", __NAMESPACE__ . "\\registerSettingsPage");
 add_filter(
     "plugin_action_links_" . plugin_basename(Plugin\BASE_NAME),
     __NAMESPACE__ . "\\renderPluginActionsLinks"
 );
+
+function enqueuePubResources()
+{
+    $pluginData = get_plugin_data(Plugin\BASE_NAME);
+    $pluginVersion = $pluginData["Version"];
+    $urlStem = plugin_dir_url(Plugin\BASE_NAME);
+
+    wp_enqueue_script(
+        Plugin\SETTING_NAME . "-helpers",
+        $urlStem . "/pub/admin-helpers.js",
+        null,
+        $pluginVersion,
+        true
+    );
+
+    wp_enqueue_style(
+        Plugin\SETTING_NAME . "-styles",
+        $urlStem . "/pub/admin-styles.css",
+        null,
+        $pluginVersion,
+        "screen"
+    );
+}
 
 function registerSettingsPage()
 {
@@ -219,7 +242,7 @@ function renderRadioButtons($args)
     <?php
     endforeach;
     ?>
-    <a href="#" data-action="clear" data-input="<?php echo $args["setting_name"] ?>[<?php echo $args["field_name"] ?>]">Clear selection</a>
+    <a href="#" class="cloak" data-action="clear" data-input="<?php echo $args["setting_name"] ?>[<?php echo $args["field_name"] ?>]">Clear selection</a>
     <?php
 }
 
