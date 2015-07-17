@@ -19,8 +19,7 @@ add_filter(
 
 function enqueuePubResources()
 {
-    $pluginData = get_plugin_data(Plugin\BASE_NAME);
-    $pluginVersion = $pluginData["Version"];
+    $pluginVersion = Settings\getPluginVersion();
     $urlStem = plugin_dir_url(Plugin\BASE_NAME);
 
     wp_enqueue_script(

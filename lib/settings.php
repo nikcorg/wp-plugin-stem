@@ -49,6 +49,33 @@ function isValidField($field)
         isset($field["section"]);
 }
 
+function getPluginVersion()
+{
+    $pluginVersion = "";
+    $pluginData = null;
+
+    if (function_exists("get_plugin_data")) {
+        $pluginData = \get_plugin_data(Plugin\BASE_NAME);
+    } else {
+        if (!function_exists("get_plugins")) {
+            require_once(ABSPATH . "wp-admin/includes/plugin.php");
+        }
+
+        $pluginData = \get_plugins(DIRECTORY_SEPARATOR . \plugin_basename(Plugin\HOME_DIR));
+
+        if (array_key_exists(basename(Plugin\BASE_NAME), $pluginData)) {
+            $pluginData = $pluginData[basename(Plugin\BASE_NAME)];
+        }
+    }
+
+    if (null != $pluginData && array_key_exists("Version", $pluginData)) {
+        $pluginVersion = $pluginData["Version"];
+    }
+
+    return $pluginVersion;
+}
+
+
 function getSettings()
 {
     return array(
@@ -65,13 +92,12 @@ function getSettings()
 
 function getFieldValues($setDefault = false, $section = false)
 {
-    $pluginData = get_plugin_data(Plugin\BASE_NAME);
     $settings = getSettings();
     $option = get_option($settings["setting_name"]);
     $values = array(
         "plugin_version" => is_array($option) && array_key_exists("plugin_version", $option)
             ? $option["plugin_version"]
-            : $pluginData["Version"]
+            : getPluginVersion()
     );
 
     foreach ($settings["fields"] as $attribs) {
@@ -95,12 +121,10 @@ function getFieldValues($setDefault = false, $section = false)
 
 function sanitize($input)
 {
-    $pluginData = get_plugin_data(Plugin\BASE_NAME);
-
     $settings = getSettings();
     $values = getFieldValues();
     $output = array(
-        "plugin_version" => $pluginData["Version"]
+        "plugin_version" => getPluginVersion()
     );
 
     // Filter and validate incoming data
