@@ -150,7 +150,7 @@ function sanitize($input)
 
         // Call validator if set
         if (null != $validator) {
-            $transientValue = call_user_func($validator, $input[$key]);
+            $transientValue = call_user_func($validator, $input[$key], $attribs);
         } else {
             // ____no_selection____ is the default value placeholder in selects
             $transientValue = $transientValue === "____no_selection____" ? null : $transientValue;
