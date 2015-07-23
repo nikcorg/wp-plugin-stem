@@ -131,6 +131,7 @@ function sanitize($input)
     foreach ($settings["fields"] as $attribs) {
         $key = $attribs["section"] . ":" . $attribs["name"];
         $validator = null;
+        $sanitizer = null;
 
         // Skip any fields that don't exists
         if (! array_key_exists($key, $input)) {
@@ -138,6 +139,14 @@ function sanitize($input)
         }
 
         $transientValue = $input[$key];
+
+        // Validate field sanitizer
+        if (array_key_exists("sanitize", $attribs) && !is_callable($attribs["sanitize"])) {
+            error_log("Sanitizer for field " . $attribs["name"] . " is invalid " . $attribs["sanitize"]);
+        } elseif (array_key_exists("sanitize", $attribs) && is_callable($attribs["sanitize"])) {
+            // Invoke field sanitizer
+            $transientValue = call_user_func($sanitizer, $transientValue, $attribs);
+        }
 
         // Validate field validator
         if (array_key_exists("validate", $attribs)) {
