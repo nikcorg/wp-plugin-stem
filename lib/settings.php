@@ -119,6 +119,11 @@ function getFieldValues($setDefault = false, $section = false)
     return $values;
 }
 
+function identity($value)
+{
+    return $value;
+}
+
 function sanitize($input)
 {
     $settings = getSettings();
@@ -130,8 +135,6 @@ function sanitize($input)
     // Filter and validate incoming data
     foreach ($settings["fields"] as $attribs) {
         $key = $attribs["section"] . ":" . $attribs["name"];
-        $validator = null;
-        $sanitizer = null;
 
         // Skip any fields that don't exists
         if (! array_key_exists($key, $input)) {
@@ -140,28 +143,19 @@ function sanitize($input)
 
         $transientValue = $input[$key];
 
-        // Validate field sanitizer
-        if (array_key_exists("sanitize", $attribs) && !is_callable($attribs["sanitize"])) {
-            error_log("Sanitizer for field " . $attribs["name"] . " is invalid " . $attribs["sanitize"]);
-        } elseif (array_key_exists("sanitize", $attribs) && is_callable($attribs["sanitize"])) {
-            // Invoke field sanitizer
-            $transientValue = call_user_func($sanitizer, $transientValue, $attribs);
+        // ____no_selection____ is the default value placeholder in selects
+        if ($transientValue === "____no_selection____") {
+            $transientValue = null;
         }
 
-        // Validate field validator
-        if (array_key_exists("validate", $attribs) && !is_callable($attribs["validate"])) {
-            error_log("Validator for field " . $attribs["name"] . " is invalid: " . $attribs["validate"]);
-        } elseif (array_key_exists("validate", $attribs) && is_callable($attribs["validate"])) {
-            $validator = $attribs["validate"];
-        }
+        $validator = array_key_exists("validate", $attribs) && is_callable($attribs["validate"])
+            ? $attribs["validate"]
+            : __NAMESPACE__ . "\\identity";
+        $sanitizer = array_key_exists("sanitize", $attribs) && is_callable($attribs["sanitize"])
+            ? $attribs["sanitize"]
+            : __NAMESPACE__ . "\\identity";
 
-        // Call validator if set
-        if (null != $validator) {
-            $transientValue = call_user_func($validator, $input[$key], $attribs);
-        } else {
-            // ____no_selection____ is the default value placeholder in selects
-            $transientValue = $transientValue === "____no_selection____" ? null : $transientValue;
-        }
+        $transientValue = call_user_func($validator, call_user_func($sanitizer, $transientValue), $attribs);
 
         $output[$key] = $transientValue;
     }
