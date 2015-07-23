@@ -137,6 +137,8 @@ function sanitize($input)
             continue;
         }
 
+        $transientValue = $input[$key];
+
         // Validate field validator
         if (array_key_exists("validate", $attribs)) {
             if (is_callable($attribs["validate"])) {
@@ -148,11 +150,13 @@ function sanitize($input)
 
         // Call validator if set
         if (null != $validator) {
-            $output[$key] = call_user_func($validator, $input[$key]);
+            $transientValue = call_user_func($validator, $input[$key]);
         } else {
             // ____no_selection____ is the default value placeholder in selects
-            $output[$key] = $input[$key] === "____no_selection____" ? null : $input[$key];
+            $transientValue = $transientValue === "____no_selection____" ? null : $transientValue;
         }
+
+        $output[$key] = $transientValue;
     }
 
     // When version numbers don't match, do a migration
