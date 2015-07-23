@@ -149,12 +149,10 @@ function sanitize($input)
         }
 
         // Validate field validator
-        if (array_key_exists("validate", $attribs)) {
-            if (is_callable($attribs["validate"])) {
-                $validator = $attribs["validate"];
-            } else {
-                error_log("Validator for field " . $attribs["name"] . " is invalid: " . $attribs["validate"]);
-            }
+        if (array_key_exists("validate", $attribs) && !is_callable($attribs["validate"])) {
+            error_log("Validator for field " . $attribs["name"] . " is invalid: " . $attribs["validate"]);
+        } elseif (array_key_exists("validate", $attribs) && is_callable($attribs["validate"])) {
+            $validator = $attribs["validate"];
         }
 
         // Call validator if set
