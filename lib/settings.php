@@ -119,6 +119,11 @@ function getFieldValues($setDefault = false, $section = false)
     return $values;
 }
 
+function identity($value)
+{
+    return $value;
+}
+
 function sanitize($input)
 {
     $settings = getSettings();
@@ -130,29 +135,29 @@ function sanitize($input)
     // Filter and validate incoming data
     foreach ($settings["fields"] as $attribs) {
         $key = $attribs["section"] . ":" . $attribs["name"];
-        $validator = null;
 
         // Skip any fields that don't exists
         if (! array_key_exists($key, $input)) {
             continue;
         }
 
-        // Validate field validator
-        if (array_key_exists("validate", $attribs)) {
-            if (is_callable($attribs["validate"])) {
-                $validator = $attribs["validate"];
-            } else {
-                error_log("Validator for field " . $attribs["name"] . " is invalid: " . $attribs["validate"]);
-            }
+        $transientValue = $input[$key];
+
+        // ____no_selection____ is the default value placeholder in selects
+        if ($transientValue === "____no_selection____") {
+            $transientValue = null;
         }
 
-        // Call validator if set
-        if (null != $validator) {
-            $output[$key] = call_user_func($validator, $input[$key]);
-        } else {
-            // ____no_selection____ is the default value placeholder in selects
-            $output[$key] = $input[$key] === "____no_selection____" ? null : $input[$key];
-        }
+        $validator = array_key_exists("validate", $attribs) && is_callable($attribs["validate"])
+            ? $attribs["validate"]
+            : __NAMESPACE__ . "\\identity";
+        $sanitizer = array_key_exists("sanitize", $attribs) && is_callable($attribs["sanitize"])
+            ? $attribs["sanitize"]
+            : __NAMESPACE__ . "\\identity";
+
+        $transientValue = call_user_func($validator, call_user_func($sanitizer, $transientValue), $attribs);
+
+        $output[$key] = $transientValue;
     }
 
     // When version numbers don't match, do a migration
