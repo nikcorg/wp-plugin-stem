@@ -126,7 +126,6 @@ function renderField($args)
         case "number":
         case "email":
         case "text":
-        case "tel":
         case "url":
             renderTextField($args);
             break;
