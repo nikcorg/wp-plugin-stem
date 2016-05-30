@@ -17,7 +17,7 @@ function getSections()
 
 function getFields()
 {
-    // Add fields here, if there are very many, using includes and separate files might make sense.
+    // Add fields here
     return array(
         array(
             "section" => "section_name",
