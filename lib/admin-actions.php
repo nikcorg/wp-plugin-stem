@@ -165,7 +165,7 @@ function renderTextField($args, $multiline = false)
     if (!$multiline) {
         ?>
         <input
-            type="<?php $args["type"] ?>"
+            type="<?php echo $args["type"] ?>"
             name="<?php echo getFieldName($args) ?>"
             value="<?php echo $args["value"] ?>"
             id="<?php echo $args["field_name"] ?>"
@@ -176,7 +176,6 @@ function renderTextField($args, $multiline = false)
     } else {
         ?>
         <textarea
-            type="<?php $args["type"] ?>"
             name="<?php echo getFieldName($args) ?>"
             id="<?php echo $args["field_name"] ?>"
             placeholder="<?php echo $args["placeholder"] ?>"
