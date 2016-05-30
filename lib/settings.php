@@ -17,8 +17,7 @@ function getSections()
 
 function getFields()
 {
-    // Add fields here, if there are very many, array_merging from many included
-    // files might make sense.
+    // Add fields here, if there are very many, using includes and separate files might make sense.
     return array(
         array(
             "section" => "section_name",
@@ -137,7 +136,7 @@ function sanitize($input)
         $key = $attribs["section"] . ":" . $attribs["name"];
 
         // Skip any fields that don't exists
-        if (! array_key_exists($key, $input)) {
+        if (!array_key_exists($key, $input)) {
             continue;
         }
 

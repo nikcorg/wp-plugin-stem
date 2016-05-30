@@ -151,7 +151,7 @@ function renderField($args)
             break;
     }
 
-    if (array_key_exists("description", $args) && ! empty($args["description"])) {
+    if (array_key_exists("description", $args) && !empty($args["description"])) {
         printf("<p>%s</p>", $args["description"]);
     }
 }
@@ -192,7 +192,7 @@ function renderSelect($args)
         class="<?php echo $args["className"] ?>"
     >
 
-    <?php if (! is_null($args["default"])): ?>
+    <?php if (!is_null($args["default"])): ?>
         <option value="____no_selection____"><?php echo $args["default"] ?></option>
     <?php endif; ?>
 
