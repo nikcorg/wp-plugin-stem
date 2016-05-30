@@ -259,6 +259,7 @@ function renderCheckbox($args)
         $isDefault = $fieldValue === $args["default"];
         ?>
 
+        <label>
         <input
             type="checkbox"
             name="<?php echo getFieldName($args) ?>[]"
@@ -268,7 +269,7 @@ function renderCheckbox($args)
             <?php if ($selected): ?>checked<?php endif; ?>
         >
 
-        <?php echo $label ?> <?php if ($isDefault): ?>(default)<?php endif; ?><br>
+        <?php echo $label ?></label> <?php if ($isDefault): ?>(default)<?php endif; ?><br>
     <?php
     endforeach;
 }
