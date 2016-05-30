@@ -198,8 +198,7 @@ function registerSettings()
         "className" => "",
         "options" => null,
         "default" => null,
-        "description" => null,
-        "setting_name" => $settings["setting_name"]
+        "description" => null
     );
 
     foreach ($settings["fields"] as $attribs) {
@@ -210,7 +209,8 @@ function registerSettings()
             array(
                 "value" => $values[$fieldName],
                 "label_for" => $fieldName,
-                "field_name" => $fieldName
+                "field_name" => $fieldName,
+                "setting_name" => $settings["setting_name"]
             )
         );
 
