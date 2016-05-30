@@ -102,6 +102,7 @@ function renderPluginActionsLinks($links)
 function renderSettingsPage()
 {
     $settings = Settings\getSettings();
+    $settingsValues = WP_DEBUG ? Settings\getFieldValues(true) : null;
 
     include Plugin\HOME_DIR . DIRECTORY_SEPARATOR . "templates" . DIRECTORY_SEPARATOR . "plugin-settings.php";
 }

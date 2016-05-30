@@ -13,3 +13,8 @@
     submit_button();
     ?>
 </form>
+
+<?php if (WP_DEBUG): ?>
+    <hr>
+    <pre><?php echo var_export($settingsValues) ?></pre>
+<?php endif; ?>
