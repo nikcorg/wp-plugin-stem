@@ -156,13 +156,17 @@ function renderField($args)
     }
 }
 
+function getFieldName($args) {
+    return sprintf("%s[%s]", $args["setting_name"], $args["field_name"]);
+}
+
 function renderTextField($args, $multiline = false)
 {
     if (!$multiline) {
         ?>
         <input
             type="<?php $args["type"] ?>"
-            name="<?php echo $args["setting_name"] ?>[<?php echo $args["field_name"] ?>]"
+            name="<?php echo getFieldName($args) ?>"
             value="<?php echo $args["value"] ?>"
             id="<?php echo $args["field_name"] ?>"
             placeholder="<?php echo $args["placeholder"] ?>"
@@ -173,7 +177,7 @@ function renderTextField($args, $multiline = false)
         ?>
         <textarea
             type="<?php $args["type"] ?>"
-            name="<?php echo $args["setting_name"] ?>[<?php echo $args["field_name"] ?>]"
+            name="<?php echo getFieldName($args) ?>"
             id="<?php echo $args["field_name"] ?>"
             placeholder="<?php echo $args["placeholder"] ?>"
             class="<?php echo $args["className"] ?> textinput"
@@ -187,7 +191,7 @@ function renderSelect($args)
     $useKeyForValue = isAssocArray($args["options"]);
     ?>
     <select
-        name="<?php echo $args["setting_name"] ?>[<?php echo $args["field_name"] ?>]"
+        name="<?php echo getFieldName($args) ?>"
         id="<?php echo $args["field_name"] ?>"
         class="<?php echo $args["className"] ?>"
     >
@@ -230,7 +234,7 @@ function renderRadioButtons($args)
         <label>
         <input
             type="radio"
-            name="<?php echo $args["setting_name"] ?>[<?php echo $args["field_name"] ?>]"
+            name="<?php echo getFieldName($args) ?>"
             id="<?php echo $args["field_name"] ?>"
             class="<?php echo $args["className"] ?>"
             value="<?php echo $fieldValue ?>"
@@ -258,7 +262,7 @@ function renderCheckbox($args)
 
         <input
             type="checkbox"
-            name="<?php echo $args["setting_name"] ?>[<?php echo $args["field_name"] ?>][]"
+            name="<?php echo getFieldName($args) ?>[]"
             id="<?php echo $args["field_name"] ?>"
             class="<?php echo $args["className"] ?>"
             value="<?php echo $useKeyForValue ? $value : $label ?>"
