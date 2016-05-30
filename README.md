@@ -15,6 +15,40 @@ The boilerplate contains what's required for setting up a plugin settings page a
 3. Add settings sections to `/lib/settings.php#getSections()` as required
 4. Hook on to public actions in `/lib/actions.php`
 
+## Settings
+
+Field and section definitions are added to `lib/settings.php`. Add sections to the return value of `getSections()` and fields to the return value of `getFields()`.
+
+### Field properties
+
+For a field to be valid, it must have a title, name, and section.
+
+- section
+- name
+- title
+
+Other properties are:
+
+- type
+- description
+- placeholder
+- options
+- default
+
+### Field types
+
+- text
+- textarea
+- number
+- email
+- url
+
+The following types require an `options` property. If it is an associative array, the value returned from `getFieldValues()` will be the key and not the value.
+
+- select
+- radio
+- checkbox
+
 ## License
 
 MIT
