@@ -165,7 +165,7 @@ function renderTextField($args, $multiline = false)
             name="<?php echo $args["setting_name"] ?>[<?php echo $args["field_name"] ?>]"
             value="<?php echo $args["value"] ?>"
             id="<?php echo $args["field_name"] ?>"
-            placeholder="<?php echo $args["default"] ?>"
+            placeholder="<?php echo $args["placeholder"] ?>"
             class="<?php echo $args["className"] ?> textinput"
         />
         <?php
@@ -175,7 +175,7 @@ function renderTextField($args, $multiline = false)
             type="<?php $args["type"] ?>"
             name="<?php echo $args["setting_name"] ?>[<?php echo $args["field_name"] ?>]"
             id="<?php echo $args["field_name"] ?>"
-            placeholder="<?php echo $args["default"] ?>"
+            placeholder="<?php echo $args["placeholder"] ?>"
             class="<?php echo $args["className"] ?> textinput"
         ><?php echo $args["value"] ?></textarea>
         <?php

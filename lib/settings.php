@@ -25,7 +25,8 @@ function getFields()
             "name" => "field-name-in-markup",
             "title" => "Field title",
             "default" => "default value, also used as placeholder",
-            "description" => "Optional field description"
+            "description" => "Optional field description",
+            "placeholder" => "Field content placeholder"
         ),
     );
 }
