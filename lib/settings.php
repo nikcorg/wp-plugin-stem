@@ -105,14 +105,19 @@ function getFieldValues($setDefault = false, $section = false)
             continue;
         }
 
-        $key = $attribs["section"] . ":" . $attribs["name"];
-        $exportKey = false != $section ? $attribs["name"] : $key;
-        $values[$exportKey] = null;
+        $fieldName = $attribs["section"] . ":" . $attribs["name"];
 
-        if (is_array($option) && array_key_exists($key, $option) && !empty($option[$key])) {
-            $values[$exportKey] = $option[$key];
+        // Prefix the export key with the section name when the section argument is unset
+        $exportKey = false === $section
+            ? $fieldName
+            : $attribs["name"];
+
+        if (is_array($option) && array_key_exists($fieldName, $option) && !empty($option[$fieldName])) {
+            $values[$exportKey] = $option[$fieldName];
         } elseif ($setDefault) {
             $values[$exportKey] = $attribs["default"];
+        } else {
+            $values[$exportKey] = null;
         }
     }
 
@@ -134,14 +139,14 @@ function sanitize($input)
 
     // Filter and validate incoming data
     foreach ($settings["fields"] as $attribs) {
-        $key = $attribs["section"] . ":" . $attribs["name"];
+        $fieldName = $attribs["section"] . ":" . $attribs["name"];
 
         // Skip any fields that don't exists
-        if (!array_key_exists($key, $input)) {
+        if (!array_key_exists($fieldName, $input)) {
             continue;
         }
 
-        $transientValue = $input[$key];
+        $transientValue = $input[$fieldName];
 
         // ____no_selection____ is the default value placeholder in selects
         if ($transientValue === "____no_selection____") {
@@ -157,7 +162,7 @@ function sanitize($input)
 
         $transientValue = call_user_func($validator, call_user_func($sanitizer, $transientValue), $attribs);
 
-        $output[$key] = $transientValue;
+        $output[$fieldName] = $transientValue;
     }
 
     // When version numbers don't match, do a migration
