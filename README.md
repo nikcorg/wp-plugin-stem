@@ -41,8 +41,8 @@ The function `getSections` in `lib/settings.php` should return an associative ar
 
 #### Section Properties
 
-- name
-- description (optional)
+- name (`PROP_NAME`)
+- description (`PROP_DESCRIPTION`) (optional)
 
 #### Example
 
@@ -53,8 +53,8 @@ function getSections()
 {
     return array(
         SECTION_DEFAULT => array(
-            "name" => "Global settings",
-            "descriptions" => "These settings apply when more specific settings don't exist"
+            PROP_NAME => "Global settings",
+            PROP_DESCRIPTION => "These settings apply when more specific settings don't exist"
         )
     );
 }
@@ -68,19 +68,19 @@ The function `getFields` in `lib/settings.php` should return an array of field d
 
 For a field to be valid, it must have a title, name, and section.
 
-- section
-- name
-- title
+- section (`PROP_SECTION`)
+- name (`PROP_NAME`)
+- title (`PROP_TITLE`)
 
 Other properties are:
 
-- type
-- description
-- placeholder
-- options
-- default
-- validate (callback)
-- sanitize (callback)
+- type (`PROP_TYPE`)
+- description (`PROP_DESCRIPTION`)
+- placeholder (`PROP_PLACEHOLDER`)
+- options (`PROP_OPTIONS`)
+- default (`PROP_DEFAULT`)
+- validate (`PROP_VALIDATE`) (callback)
+- sanitize (`PROP_SANITIZE`) (callback)
 
 #### Field Types
 
@@ -97,8 +97,6 @@ The following types require an `options` property. If it is an associative array
 - radio (`FIELD_RADIO`)
 - checkbox (`FIELD_CHECKBOX`)
 
-You should use the constants defined in `settings.php` to avoid typos.
-
 #### Example
 
 ```php
@@ -106,11 +104,11 @@ function getFields()
 {
     return array(
         array(
-            "section" => SECTION_DEFAULT,
-            "type" => FIELD_TEXT_MULTILINE,
-            "name" => "post-footer",
-            "title" => "Post footer text",
-            "description" => "A short text displayed after each post"
+            PROP_SECTION => SECTION_DEFAULT,
+            PROP_TYPE => FIELD_TEXT_MULTILINE,
+            PROP_NAME => "post-footer",
+            PROP_TITLE => "Post footer text",
+            PROP_DESCRIPTION => "A short text displayed after each post"
         )
     );
 }
