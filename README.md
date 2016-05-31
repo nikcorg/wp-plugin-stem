@@ -19,16 +19,16 @@ The boilerplate contains what's required for setting up a plugin settings page a
 
 Field and section definitions are added to `lib/settings.php`. Add sections to the return value of `getSections()` and fields to the return value of `getFields()`.
 
-## Sections
+### Settings Sections
 
 The function `getSections` in `lib/settings.php` should return an associative array of section definitions, where the array keys is the section identifier. It is recommended to define the section identifiers as constants, to avoid bugs introduced by typos because of "magic strings".
 
-### Section properties
+#### Section properties
 
 - name
 - description (optional)
 
-### Example
+#### Example
 
 ```php
 const SECTION_DEFAULT = "default";
@@ -44,11 +44,11 @@ function getSections()
 }
 ```
 
-## Fields
+### Settings Fields
 
 The function `getFields` in `lib/settings.php` should return an array of field definitions.
 
-### Field properties
+#### Field properties
 
 For a field to be valid, it must have a title, name, and section.
 
@@ -66,7 +66,7 @@ Other properties are:
 - validate (callback)
 - sanitize (callback)
 
-### Field types
+#### Field types
 
 - text (`FIELD_TEXT`)
 - textarea (`FIELD_TEXT_MULTILINE`)
@@ -83,7 +83,7 @@ The following types require an `options` property. If it is an associative array
 
 You should use the constants defined in `settings.php` to avoid typos.
 
-### Example
+#### Example
 
 ```php
 function getFields()
@@ -100,9 +100,9 @@ function getFields()
 }
 ```
 
-### Sanitising and validation
+## Settings Fields sanitising and validation
 
-Separate fields for validation and sanitising is to enable using general purpose input sanitisers, e.g. string/number/url/date etc, while still retaining the option to have strict field specific validation.
+Each field has separate properties for validation and sanitising to enable general purpose input sanitisers, e.g. string/number/url/date etc, while still retaining the option to have strict field specific validation.
 
 The sanitize callback receives as arguments only the field's value, while the validator also receives the fields attributes.
 
