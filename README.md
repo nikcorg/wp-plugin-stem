@@ -118,13 +118,25 @@ function getFields()
 
 Each field has separate properties for validation and sanitising to enable general purpose input sanitisers, e.g. string/number/url/date etc, while still retaining the option to have strict field specific validation.
 
-The sanitize callback receives as arguments only the field's value, while the validator also receives the fields attributes.
+The sanitize callback receives as arguments only the field's value, while the validator also receives the fields attributes and an error callback.
 
 Invoking order is sanitize -> validate, i.e. validate get's the output from sanitize. The value returned from sanitize is the value stored.
 
 ### Showing Validation Errors
 
-To keep things simpler in the field settings structure, error message display should be handled in your own validation code. In case of a validation error, your validation function should return an empty value. To display and error message, you must register it using [add_settings_error](https://codex.wordpress.org/Function_Reference/add_settings_error).
+The validation callback receives as it's third argument a callback that takes an error message and error type (recognized values: "error", "update") as params. These validation errors are displayed during WordPress' `adminNotices` action.
+
+### Example
+
+```php
+function validateLength($str, $attribs, $errorCb) {
+    if (20 > strlen($str) || strlen($str) > 40) {
+        $errorCb("The text should be between 20 and 40 characters in length.");
+    }
+
+    return $str;
+}
+```
 
 ## Version Updates
 
