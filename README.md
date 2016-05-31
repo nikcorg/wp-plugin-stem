@@ -68,18 +68,18 @@ Other properties are:
 
 ### Field types
 
-- text
-- textarea
-- number
-- email
-- url
-- date/datetime/time
+- text (`FIELD_TEXT`)
+- textarea (`FIELD_TEXT_MULTILINE`)
+- number (`FIELD_NUMBER`)
+- email (`FIELD_EMAIL`)
+- url (`FIELD_URL`)
+- date/datetime/time (`FIELD_DATE`, `FIELD_DATETIME`, `FIELD_TIME`)
 
 The following types require an `options` property. If it is an associative array, the value returned from `getFieldValues()` will be the key and not the value.
 
-- select
-- radio
-- checkbox
+- select (`FIELD_SELECT`)
+- radio (`FIELD_RADIO`)
+- checkbox (`FIELD_CHECKBOX`)
 
 You should use the constants defined in `settings.php` to avoid typos.
 
