@@ -52,6 +52,23 @@ function registerSettingsPage()
     );
 }
 
+function getErrorCallback()
+{
+    return __NAMESPACE__ . "\\addSettingsError";
+}
+
+function addSettingsError($message, $type = "error")
+{
+    $settings = Settings\getSettings();
+
+    add_settings_error(
+        $settings[Settings\S_SETTING_NAME],
+        $settings[Settings\S_PAGE_NAME],
+        $message,
+        $type
+    );
+}
+
 function adminNotices()
 {
     $settings = Settings\getSettings();
@@ -60,7 +77,7 @@ function adminNotices()
     foreach ($errors as $error) {
         if ($error["type"] != "error" && $error["type"] != "updated") {
             continue;
-        } elseif ($error["code"] === $settings["page_name"]) {
+        } elseif ($error["code"] === $settings[Settings\S_PAGE_NAME]) {
             ?>
             <div class="<?php echo $error["type"] ?>"><p><?php echo $error["message"] ?></p></div>
             <?php
