@@ -1,10 +1,10 @@
-# Boilerplate stuff for WordPress plugin development
+# Boilerplate Stuff For WordPress Plugin Development
 
 I've had the dubious pleasure of creating a few WordPress plugins. Setting them up was never something to look forward to, so I gathered recurring features into a single place. A lot of this code is code I believe should be a shared dependency, or part of WordPress core, but this is probably the second best option.
 
 Very little here is completely original code, but has rather been compiled and paraphrased from many sources here and there. I'd give due credit, but having waded through what seems like gigabytes of WordPress related blog posts to find all that I need, I'm truly not capable to do so: Credits go to the entire WordPress community.
 
-## Contents
+## What's In This Repo
 
 The boilerplate contains what's required for setting up a plugin settings page and running admin and public actions, i.e. just the basic harness to build the rest upon.
 
@@ -15,18 +15,20 @@ The boilerplate contains what's required for setting up a plugin settings page a
 3. Add settings sections to `/lib/settings.php#getSections()` as required
 4. Hook on to public actions in `/lib/actions.php`
 
-## Debug mode
+## Debug Mode And Logging
 
 If `WP_DEBUG` is set and `true` the current settings values is by default displayed on the settings page.
 
+For invalid settings errors are logged using `error_log`. This happens regardless of the value of `WP_DEBUG`.
+
 ## Consumption API
 
-The `Settings` namespace really only provides two functions for consuming:
+The `Settings` namespace really only provides two functions for consuming settings:
 
 - `Settings\getSettings()`
     - returns all plugin settings in a single array structure
 - `Settings\getFieldValues($setDefault = false, $section = null)`
-    - returns field values, with optionally default value set for empty values
+    - returns field values, with optionally default value set for empty values (`empty($value) === true`)
     - if all sections are queried, the field name is prefixed with the section identifier follow by a colon (`:`)
 
 ## Defining Settings
@@ -35,9 +37,9 @@ Field and section definitions are added to `lib/settings.php`. Add sections to t
 
 ### Settings Sections
 
-The function `getSections` in `lib/settings.php` should return an associative array of section definitions, where the array keys is the section identifier. It is recommended to define the section identifiers as constants, to avoid bugs introduced by typos because of "magic strings".
+The function `getSections` in `lib/settings.php` should return an associative array of section definitions, where the array _key_ is the _section identifier_. It is recommended to define the section identifiers as constants, to avoid bugs introduced by typos because of "magic strings".
 
-#### Section properties
+#### Section Properties
 
 - name
 - description (optional)
@@ -62,7 +64,7 @@ function getSections()
 
 The function `getFields` in `lib/settings.php` should return an array of field definitions.
 
-#### Field properties
+#### Field Properties
 
 For a field to be valid, it must have a title, name, and section.
 
@@ -80,7 +82,7 @@ Other properties are:
 - validate (callback)
 - sanitize (callback)
 
-#### Field types
+#### Field Types
 
 - text (`FIELD_TEXT`)
 - textarea (`FIELD_TEXT_MULTILINE`)
@@ -114,7 +116,7 @@ function getFields()
 }
 ```
 
-## Settings Fields sanitising and validation
+## Settings Fields Sanitising And Validation
 
 Each field has separate properties for validation and sanitising to enable general purpose input sanitisers, e.g. string/number/url/date etc, while still retaining the option to have strict field specific validation.
 
@@ -122,7 +124,7 @@ The sanitize callback receives as arguments only the field's value, while the va
 
 Invoking order is sanitize -> validate.
 
-## Version updates
+## Version Updates
 
 If you need to do work between version updates, add your work to the `migrateVersion()` function in `settings.php`. It is invoked when settings are saved and the previous version differs from the current version. The default function is a no-op.
 
