@@ -15,7 +15,21 @@ The boilerplate contains what's required for setting up a plugin settings page a
 3. Add settings sections to `/lib/settings.php#getSections()` as required
 4. Hook on to public actions in `/lib/actions.php`
 
-## Settings
+## Debug mode
+
+If `WP_DEBUG` is set and `true` the current settings values is by default displayed on the settings page.
+
+## Consumption API
+
+The `Settings` namespace really only provides two functions for consuming:
+
+- `Settings\getSettings()`
+    - returns all plugin settings in a single array structure
+- `Settings\getFieldValues($setDefault = false, $section = null)`
+    - returns field values, with optionally default value set for empty values
+    - if all sections are queried, the field name is prefixed with the section identifier follow by a colon (`:`)
+
+## Defining Settings
 
 Field and section definitions are added to `lib/settings.php`. Add sections to the return value of `getSections()` and fields to the return value of `getFields()`.
 
@@ -107,6 +121,10 @@ Each field has separate properties for validation and sanitising to enable gener
 The sanitize callback receives as arguments only the field's value, while the validator also receives the fields attributes.
 
 Invoking order is sanitize -> validate.
+
+## Version updates
+
+If you need to do work between version updates, add your work to the `migrateVersion()` function in `settings.php`. It is invoked when settings are saved and the previous version differs from the current version. The default function is a no-op.
 
 ## License
 
