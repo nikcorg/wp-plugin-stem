@@ -120,7 +120,11 @@ Each field has separate properties for validation and sanitising to enable gener
 
 The sanitize callback receives as arguments only the field's value, while the validator also receives the fields attributes.
 
-Invoking order is sanitize -> validate.
+Invoking order is sanitize -> validate, i.e. validate get's the output from sanitize. The value returned from sanitize is the value stored.
+
+### Showing Validation Errors
+
+To keep things simpler in the field settings structure, error message display should be handled in your own validation code. In case of a validation error, your validation function should return an empty value. To display and error message, you must register it using [add_settings_error](https://codex.wordpress.org/Function_Reference/add_settings_error).
 
 ## Version Updates
 
