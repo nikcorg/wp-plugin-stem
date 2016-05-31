@@ -228,7 +228,12 @@ function sanitize($input)
             ? $attribs[PROP_SANITIZE]
             : __NAMESPACE__ . "\\identity";
 
-        $transientValue = call_user_func($validator, call_user_func($sanitizer, $transientValue), $attribs);
+        $transientValue = call_user_func(
+            $validator,
+            call_user_func($sanitizer, $transientValue),
+            $attribs,
+            AdminActions\getErrorCallback()
+            );
 
         $output[$fieldName] = $transientValue;
     }
