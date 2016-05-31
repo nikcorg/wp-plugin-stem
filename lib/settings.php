@@ -43,10 +43,26 @@ add_action("admin_init", __NAMESPACE__ . "\\registerSettings");
 
 function isValidField($field)
 {
-    return is_array($field) &&
-        isset($field["name"]) &&
-        isset($field["title"]) &&
-        isset($field["section"]);
+    if (!is_array($field)) {
+        error_log("A field definition must be an array");
+        return false;
+    }
+
+    $hasRequiredProps = isset($field["name"]) && isset($field["title"]) && isset($field["section"]);
+
+    if (!$hasRequiredProps) {
+            error_log("A field is missing one or more required property. Required properties are: name, title, section.");
+            return false;
+    } elseif ($hasRequiredProps && !array_key_exists($field["section"], getSections())) {
+        error_log(sprintf(
+            "Field `%s` is assigned to an undefined section `%s`",
+            $field["name"],
+            $field["section"]
+        ));
+        return false;
+    }
+
+    return true;
 }
 
 function getPluginVersion()
