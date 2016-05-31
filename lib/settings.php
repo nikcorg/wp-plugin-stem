@@ -173,6 +173,21 @@ function sanitize($input)
     return $output;
 }
 
+function normaliseAttribNames($attribs)
+{
+    if (array_key_exists("sanitise", $attribs)) {
+        error_log(sprintf(
+            "Use spelling `sanitize` instead of `sanitise` for setting `%s` in section `%s`",
+            $attribs["name"], $attribs["section"]
+        ));
+
+        $attribs["sanitize"] = $attribs["sanitise"];
+        unset($attribs["sanitise"]);
+    }
+
+    return $attribs;
+}
+
 function registerSettings()
 {
     $settings = getSettings();
@@ -205,7 +220,7 @@ function registerSettings()
         $fieldName = $attribs["section"] . ":" . $attribs["name"];
         $renderingArgs = array_merge(
             $renderDefaults,
-            $attribs,
+            normaliseAttribNames($attribs),
             array(
                 "value" => $values[$fieldName],
                 "label_for" => $fieldName,
