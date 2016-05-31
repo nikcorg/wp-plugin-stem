@@ -34,6 +34,8 @@ Other properties are:
 - placeholder
 - options
 - default
+- validate (callback)
+- sanitize (callback)
 
 ### Field types
 
