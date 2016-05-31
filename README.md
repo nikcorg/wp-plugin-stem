@@ -52,6 +52,14 @@ The following types require an `options` property. If it is an associative array
 - radio
 - checkbox
 
+### Sanitising and validation
+
+Separate fields for validation and sanitising is to enable using general purpose input sanitisers, e.g. string/number/url/date etc, while still retaining the option to have strict field specific validation.
+
+The sanitize callback receives as arguments only the field's value, while the validator also receives the fields attributes.
+
+Invoking order is sanitize -> validate.
+
 ## License
 
 MIT
