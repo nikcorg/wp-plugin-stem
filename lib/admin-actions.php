@@ -123,29 +123,29 @@ function renderField($args)
 {
     switch ($args["type"])
     {
-        case "number":
-        case "email":
-        case "text":
-        case "url":
-        case "date":
-        case "datetime":
-        case "time":
+        case Settings\FIELD_NUMBER:
+        case Settings\FIELD_EMAIL:
+        case Settings\FIELD_TEXT:
+        case Settings\FIELD_URL:
+        case Settings\FIELD_DATE:
+        case Settings\FIELD_DATETIME:
+        case Settings\FIELD_TIME:
             renderTextField($args);
             break;
 
-        case "textarea":
+        case Settings\FIELD_TEXT_MULTILINE:
             renderTextField($args, true);
             break;
 
-        case "select":
+        case Settings\FIELD_SELECT:
             renderSelect($args);
             break;
 
-        case "radio":
+        case Settings\FIELD_RADIO:
             renderRadioButtons($args);
             break;
 
-        case "checkbox":
+        case Settings\FIELD_CHECKBOX:
             renderCheckbox($args);
             break;
 
