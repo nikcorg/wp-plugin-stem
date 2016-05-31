@@ -60,7 +60,7 @@ function adminNotices()
     foreach ($errors as $error) {
         if ($error["type"] != "error" && $error["type"] != "updated") {
             continue;
-        } elseif ($error["code"] === $settings["page_name"]) {
+        } elseif ($error["code"] === $settings[Settings\S_PAGE_NAME]) {
             ?>
             <div class="<?php echo $error["type"] ?>"><p><?php echo $error["message"] ?></p></div>
             <?php
