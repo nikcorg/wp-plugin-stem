@@ -7,22 +7,13 @@
  */
 namespace Plugins\Boilerplate;
 
-// Helper for absolute path references
-const HOME_DIR = __DIR__;
-
-// Helpers for use get_plugin_data
-const BASE_NAME = __FILE__;
-
 // Value for get_option (database name)
 const SETTING_NAME = "plugin-stem";
 
-// Capability required for managing settings
-const REQUIRE_CAPS = "manage_options";
-
-// Page slug
+// Settings page slug
 const PAGE_NAME = "plugin-stem-settings";
 
-// Page title
+// Settings page title
 const PAGE_TITLE = "Plugin Stem Options";
 
 // Settings page description
@@ -30,6 +21,15 @@ const PAGE_DESCRIPTION = "Settings for Plugin Stem";
 
 // Menu title (in plugins menu)
 const MENU_TITLE = "Plugin Stem";
+
+// Helper for absolute path references
+const HOME_DIR = __DIR__;
+
+// Helpers for use get_plugin_data
+const BASE_NAME = __FILE__;
+
+// Capability required for managing settings
+const REQUIRE_CAPS = "manage_options";
 
 // Include settings and actions
 require HOME_DIR . DIRECTORY_SEPARATOR . "lib" . DIRECTORY_SEPARATOR . "settings.php";
