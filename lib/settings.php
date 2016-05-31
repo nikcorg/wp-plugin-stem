@@ -55,6 +55,54 @@ const FIELD_CHECKBOX = "checkbox";
 
 add_action("admin_init", __NAMESPACE__ . "\\registerSettings");
 
+function getSettings()
+{
+    return array(
+        "setting_name" => Plugin\SETTING_NAME,
+        "page_name" => Plugin\PAGE_NAME,
+        "page_title" => Plugin\PAGE_TITLE,
+        "menu_title" => Plugin\MENU_TITLE,
+        "description" => Plugin\PAGE_DESCRIPTION,
+        "require_caps" => Plugin\REQUIRE_CAPS,
+        "sections" => getSections(),
+        "fields" => array_filter(getFields(), __NAMESPACE__ . "\\isValidField")
+    );
+}
+
+function getFieldValues($setDefault = false, $section = false)
+{
+    $settings = getSettings();
+    $option = get_option($settings["setting_name"]);
+    $values = array(
+        "plugin_version" => is_array($option) && array_key_exists("plugin_version", $option)
+            ? $option["plugin_version"]
+            : getPluginVersion()
+    );
+
+    foreach ($settings["fields"] as $attribs) {
+        if ($section && $section != $attribs["section"]) {
+            continue;
+        }
+
+        $fieldName = $attribs["section"] . ":" . $attribs["name"];
+
+        // Prefix the export key with the section name when the section argument is unset
+        $exportKey = false === $section
+            ? $fieldName
+            : $attribs["name"];
+
+        if (is_array($option) && array_key_exists($fieldName, $option) && !empty($option[$fieldName])) {
+            $values[$exportKey] = $option[$fieldName];
+        } elseif ($setDefault) {
+            $values[$exportKey] = $attribs["default"];
+        } else {
+            $values[$exportKey] = null;
+        }
+    }
+
+    return $values;
+}
+
 function isValidField($field)
 {
     if (!is_array($field)) {
@@ -103,55 +151,6 @@ function getPluginVersion()
     }
 
     return $pluginVersion;
-}
-
-
-function getSettings()
-{
-    return array(
-        "setting_name" => Plugin\SETTING_NAME,
-        "page_name" => Plugin\PAGE_NAME,
-        "page_title" => Plugin\PAGE_TITLE,
-        "menu_title" => Plugin\MENU_TITLE,
-        "description" => Plugin\PAGE_DESCRIPTION,
-        "require_caps" => Plugin\REQUIRE_CAPS,
-        "sections" => getSections(),
-        "fields" => array_filter(getFields(), __NAMESPACE__ . "\\isValidField")
-    );
-}
-
-function getFieldValues($setDefault = false, $section = false)
-{
-    $settings = getSettings();
-    $option = get_option($settings["setting_name"]);
-    $values = array(
-        "plugin_version" => is_array($option) && array_key_exists("plugin_version", $option)
-            ? $option["plugin_version"]
-            : getPluginVersion()
-    );
-
-    foreach ($settings["fields"] as $attribs) {
-        if ($section && $section != $attribs["section"]) {
-            continue;
-        }
-
-        $fieldName = $attribs["section"] . ":" . $attribs["name"];
-
-        // Prefix the export key with the section name when the section argument is unset
-        $exportKey = false === $section
-            ? $fieldName
-            : $attribs["name"];
-
-        if (is_array($option) && array_key_exists($fieldName, $option) && !empty($option[$fieldName])) {
-            $values[$exportKey] = $option[$fieldName];
-        } elseif ($setDefault) {
-            $values[$exportKey] = $attribs["default"];
-        } else {
-            $values[$exportKey] = null;
-        }
-    }
-
-    return $values;
 }
 
 function identity($value)
