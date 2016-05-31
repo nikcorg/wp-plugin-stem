@@ -19,6 +19,35 @@ The boilerplate contains what's required for setting up a plugin settings page a
 
 Field and section definitions are added to `lib/settings.php`. Add sections to the return value of `getSections()` and fields to the return value of `getFields()`.
 
+## Sections
+
+The function `getSections` in `lib/settings.php` should return an associative array of section definitions, where the array keys is the section identifier. It is recommended to define the section identifiers as constants, to avoid bugs introduced by typos because of "magic strings".
+
+### Section properties
+
+- name
+- description (optional)
+
+### Example
+
+```php
+const SECTION_DEFAULT = "default";
+
+function getSections()
+{
+    return array(
+        SECTION_DEFAULT => array(
+            "name" => "Global settings",
+            "descriptions" => "These settings apply when more specific settings don't exist"
+        )
+    );
+}
+```
+
+## Fields
+
+The function `getFields` in `lib/settings.php` should return an array of field definitions.
+
 ### Field properties
 
 For a field to be valid, it must have a title, name, and section.
@@ -51,6 +80,25 @@ The following types require an `options` property. If it is an associative array
 - select
 - radio
 - checkbox
+
+You should use the constants defined in `settings.php` to avoid typos.
+
+### Example
+
+```php
+function getFields()
+{
+    return array(
+        array(
+            "section" => SECTION_DEFAULT,
+            "type" => FIELD_TEXT_MULTILINE,
+            "name" => "post-footer",
+            "title" => "Post footer text",
+            "description" => "A short text displayed after each post"
+        )
+    );
+}
+```
 
 ### Sanitising and validation
 
