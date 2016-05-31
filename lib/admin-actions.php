@@ -44,10 +44,10 @@ function registerSettingsPage()
     $settings = Settings\getSettings();
 
     add_plugins_page(
-        $settings["page_title"],
-        $settings["menu_title"],
-        $settings["require_caps"],
-        $settings["page_name"],
+        $settings[Settings\S_PAGE_TITLE],
+        $settings[Settings\S_MENU_TITLE],
+        $settings[Settings\S_REQUIRE_CAPS],
+        $settings[Settings\S_PAGE_NAME],
         getPageRenderer()
     );
 }
@@ -91,7 +91,7 @@ function renderPluginActionsLinks($links)
         $links,
         sprintf(
             "<a href=\"plugins.php?page=%s\">%s</a>",
-            $settings["page_name"],
+            $settings[Settings\S_PAGE_NAME],
             "Settings"
         )
     );
@@ -111,17 +111,17 @@ function renderSection($section)
 {
     $settings = Settings\getSettings();
 
-    if (array_key_exists($section["id"], $settings["sections"])) {
-        $attribs = $settings["sections"][$section["id"]];
+    if (array_key_exists($section[Settings\PROP_ID], $settings[Settings\S_SECTIONS])) {
+        $attribs = $settings[Settings\S_SECTIONS][$section[Settings\PROP_ID]];
         ?>
-        <p id="<?php echo $section["id"] ?>"><?php echo $attribs["description"] ?></p>
+        <p id="<?php echo $section[Settings\PROP_ID] ?>"><?php echo $attribs[Settings\PROP_DESCRIPTION] ?></p>
         <?php
     }
 }
 
 function renderField($args)
 {
-    switch ($args["type"])
+    switch ($args[Settings\PROP_TYPE])
     {
         case Settings\FIELD_NUMBER:
         case Settings\FIELD_EMAIL:
@@ -150,17 +150,17 @@ function renderField($args)
             break;
 
         default:
-            error_log("Unknown field type: " . $args["type"]);
+            error_log("Unknown field type: " . $args[Settings\PROP_TYPE]);
             break;
     }
 
-    if (array_key_exists("description", $args) && !empty($args["description"])) {
-        printf("<p>%s</p>", $args["description"]);
+    if (array_key_exists(Settings\PROP_DESCRIPTION, $args) && !empty($args[Settings\PROP_DESCRIPTION])) {
+        printf("<p>%s</p>", $args[Settings\PROP_DESCRIPTION]);
     }
 }
 
 function getFieldName($args) {
-    return sprintf("%s[%s]", $args["setting_name"], $args["field_name"]);
+    return sprintf("%s[%s]", $args[Settings\S_SETTING_NAME], $args[Settings\PROP_FIELD_NAME]);
 }
 
 function renderTextField($args, $multiline = false)
@@ -168,43 +168,43 @@ function renderTextField($args, $multiline = false)
     if (!$multiline) {
         ?>
         <input
-            type="<?php echo $args["type"] ?>"
+            type="<?php echo $args[Settings\PROP_TYPE] ?>"
             name="<?php echo getFieldName($args) ?>"
-            value="<?php echo $args["value"] ?>"
-            id="<?php echo $args["field_name"] ?>"
-            placeholder="<?php echo $args["placeholder"] ?>"
-            class="<?php echo $args["className"] ?> textinput"
+            value="<?php echo $args[Settings\PROP_VALUE] ?>"
+            id="<?php echo $args[Settings\PROP_FIELD_NAME] ?>"
+            placeholder="<?php echo $args[Settings\PROP_PLACEHOLDER] ?>"
+            class="<?php echo $args[Settings\PROP_CLASSNAME] ?> textinput"
         />
         <?php
     } else {
         ?>
         <textarea
             name="<?php echo getFieldName($args) ?>"
-            id="<?php echo $args["field_name"] ?>"
-            placeholder="<?php echo $args["placeholder"] ?>"
-            class="<?php echo $args["className"] ?> textinput"
-        ><?php echo $args["value"] ?></textarea>
+            id="<?php echo $args[Settings\PROP_FIELD_NAME] ?>"
+            placeholder="<?php echo $args[Settings\PROP_PLACEHOLDER] ?>"
+            class="<?php echo $args[Settings\PROP_CLASSNAME] ?> textinput"
+        ><?php echo $args[Settings\PROP_VALUE] ?></textarea>
         <?php
     }
 }
 
 function renderSelect($args)
 {
-    $useKeyForValue = isAssocArray($args["options"]);
+    $useKeyForValue = isAssocArray($args[Settings\PROP_OPTIONS]);
     ?>
     <select
         name="<?php echo getFieldName($args) ?>"
-        id="<?php echo $args["field_name"] ?>"
-        class="<?php echo $args["className"] ?>"
+        id="<?php echo $args[Settings\PROP_FIELD_NAME] ?>"
+        class="<?php echo $args[Settings\PROP_CLASSNAME] ?>"
     >
 
-    <?php if (!is_null($args["default"])): ?>
-        <option value="____no_selection____"><?php echo $args["default"] ?></option>
+    <?php if (!is_null($args[Settings\PROP_DEFAULT])): ?>
+        <option value="<?php echo Settings\V_UNSELECTED_VALUE ?>"><?php echo $args[Settings\PROP_DEFAULT] ?></option>
     <?php endif; ?>
 
-    <?php foreach ($args["options"] as $value => $label): ?>
+    <?php foreach ($args[Settings\PROP_OPTIONS] as $value => $label): ?>
         <?php
-        $selected = $args["value"] === ($useKeyForValue ? $value : $label);
+        $selected = $args[Settings\PROP_VALUE] === ($useKeyForValue ? $value : $label);
         ?>
 
         <?php if ($useKeyForValue): ?>
@@ -225,20 +225,20 @@ function renderSelect($args)
 
 function renderRadioButtons($args)
 {
-    $useKeyForValue = isAssocArray($args["options"]);
+    $useKeyForValue = isAssocArray($args[Settings\PROP_OPTIONS]);
 
-    foreach ($args["options"] as $value => $label):
-        $selected = $args["value"] === ($useKeyForValue ? $value : $label);
+    foreach ($args[Settings\PROP_OPTIONS] as $value => $label):
+        $selected = $args[Settings\PROP_VALUE] === ($useKeyForValue ? $value : $label);
         $fieldValue = $useKeyForValue ? $value : $label;
-        $isDefault = $fieldValue === $args["default"];
+        $isDefault = $fieldValue === $args[Settings\PROP_DEFAULT];
         ?>
 
         <label>
         <input
             type="radio"
             name="<?php echo getFieldName($args) ?>"
-            id="<?php echo $args["field_name"] ?>"
-            class="<?php echo $args["className"] ?>"
+            id="<?php echo $args[Settings\PROP_FIELD_NAME] ?>"
+            class="<?php echo $args[Settings\PROP_CLASSNAME] ?>"
             value="<?php echo $fieldValue ?>"
             <?php if ($selected): ?>checked<?php endif; ?>
         >
@@ -247,27 +247,27 @@ function renderRadioButtons($args)
     <?php
     endforeach;
     ?>
-    <a href="#" class="cloak" data-action="clear" data-input="<?php echo $args["setting_name"] ?>[<?php echo $args["field_name"] ?>]">Clear selection</a>
+    <a href="#" class="cloak" data-action="clear" data-input="<?php echo $args[Settings\S_SETTING_NAME] ?>[<?php echo $args[Settings\PROP_FIELD_NAME] ?>]">Clear selection</a>
     <?php
 }
 
 function renderCheckbox($args)
 {
-    $useKeyForValue = isAssocArray($args["options"]);
-    $valueFlipped = is_array($args["value"]) ? array_flip($args["value"]) : array();
+    $useKeyForValue = isAssocArray($args[Settings\PROP_OPTIONS]);
+    $valueFlipped = is_array($args[Settings\PROP_VALUE]) ? array_flip($args[Settings\PROP_VALUE]) : array();
 
-    foreach ($args["options"] as $value => $label):
+    foreach ($args[Settings\PROP_OPTIONS] as $value => $label):
         $selected = array_key_exists($useKeyForValue ? $value : $label, $valueFlipped);
         $fieldValue = $useKeyForValue ? $value : $label;
-        $isDefault = $fieldValue === $args["default"];
+        $isDefault = $fieldValue === $args[Settings\PROP_DEFAULT];
         ?>
 
         <label>
         <input
             type="checkbox"
             name="<?php echo getFieldName($args) ?>[]"
-            id="<?php echo $args["field_name"] ?>"
-            class="<?php echo $args["className"] ?>"
+            id="<?php echo $args[Settings\PROP_FIELD_NAME] ?>"
+            class="<?php echo $args[Settings\PROP_CLASSNAME] ?>"
             value="<?php echo $useKeyForValue ? $value : $label ?>"
             <?php if ($selected): ?>checked<?php endif; ?>
         >

@@ -11,8 +11,8 @@ function getSections()
     // Add Setting sections here
     return array(
         SECTION_DEFAULT => array(
-            "title" => "Section Title",
-            "description" => "Optional section description"
+            PROP_TITLE => "Section Title",
+            PROP_DESCRIPTION => "Optional section description"
         )
     );
 }
@@ -22,14 +22,14 @@ function getFields()
     // Add fields here
     return array(
         array(
-            "section" => SECTION_DEFAULT,
-            "type" => FIELD_TEXT,
-            "name" => "field-name-in-markup",
-            "title" => "Field title",
-            "default" => "default value, also used as placeholder",
-            "description" => "Optional field description",
-            "placeholder" => "Field content placeholder"
-        ),
+            PROP_SECTION => SECTION_DEFAULT,
+            PROP_TYPE => FIELD_TEXT,
+            PROP_NAME => "field-name",
+            PROP_TITLE => "Field title",
+            PROP_DEFAULT => "default value when empty",
+            PROP_DESCRIPTION => "Optional field description",
+            PROP_PLACEHOLDER => "Field content placeholder"
+        )
     );
 }
 
@@ -41,6 +41,7 @@ function migrateVersion($values, $fromVersion, $toVersion)
 
 /* There should be very little need to edit anything below this line */
 
+/* Field types */
 const FIELD_TEXT = "text";
 const FIELD_TEXT_MULTILINE = "textarea";
 const FIELD_URL = "url";
@@ -53,48 +54,81 @@ const FIELD_SELECT = "select";
 const FIELD_RADIO = "radio";
 const FIELD_CHECKBOX = "checkbox";
 
+/* Field/Section properties */
+const PROP_DEFAULT = "default";
+const PROP_DESCRIPTION = "description";
+const PROP_NAME = "name";
+const PROP_OPTIONS = "options";
+const PROP_PLACEHOLDER = "placeholder";
+const PROP_SANITIZE = "sanitize";
+const PROP_SECTION = "section";
+const PROP_TITLE = "title";
+const PROP_TYPE = "type";
+const PROP_VALIDATE = "validate";
+
+/* Generated properties */
+const PROP_ID = "id";
+const PROP_VALUE = "value";
+const PROP_FIELD_NAME = "field_name";
+const PROP_LABEL_FOR = "label_for";
+const PROP_CLASSNAME = "className";
+
+/* Setting names */
+const S_SETTING_NAME = "setting_name";
+const S_PAGE_NAME = "page_name";
+const S_PAGE_TITLE = "page_title";
+const S_MENU_TITLE = "menu_title";
+const S_DESCRIPTION = "description";
+const S_REQUIRE_CAPS = "require_caps";
+const S_SECTIONS = "sections";
+const S_FIELDS = "fields";
+const S_PLUGIN_VERSION = "plugin_version";
+
+/* Default unselected value for radio/checkbox/select */
+const V_UNSELECTED_VALUE = "____no_selection____";
+
 add_action("admin_init", __NAMESPACE__ . "\\registerSettings");
 
 function getSettings()
 {
     return array(
-        "setting_name" => Plugin\SETTING_NAME,
-        "page_name" => Plugin\PAGE_NAME,
-        "page_title" => Plugin\PAGE_TITLE,
-        "menu_title" => Plugin\MENU_TITLE,
-        "description" => Plugin\PAGE_DESCRIPTION,
-        "require_caps" => Plugin\REQUIRE_CAPS,
-        "sections" => getSections(),
-        "fields" => array_filter(getFields(), __NAMESPACE__ . "\\isValidField")
+        S_SETTING_NAME => Plugin\SETTING_NAME,
+        S_PAGE_NAME => Plugin\PAGE_NAME,
+        S_PAGE_TITLE => Plugin\PAGE_TITLE,
+        S_MENU_TITLE => Plugin\MENU_TITLE,
+        S_DESCRIPTION => Plugin\PAGE_DESCRIPTION,
+        S_REQUIRE_CAPS => Plugin\REQUIRE_CAPS,
+        S_SECTIONS => getSections(),
+        S_FIELDS => array_filter(getFields(), __NAMESPACE__ . "\\isValidField")
     );
 }
 
 function getFieldValues($setDefault = false, $section = false)
 {
     $settings = getSettings();
-    $option = get_option($settings["setting_name"]);
+    $option = get_option($settings[S_SETTING_NAME]);
     $values = array(
-        "plugin_version" => is_array($option) && array_key_exists("plugin_version", $option)
-            ? $option["plugin_version"]
+        S_PLUGIN_VERSION => is_array($option) && array_key_exists(S_PLUGIN_VERSION, $option)
+            ? $option[S_PLUGIN_VERSION]
             : getPluginVersion()
     );
 
-    foreach ($settings["fields"] as $attribs) {
-        if ($section && $section != $attribs["section"]) {
+    foreach ($settings[S_FIELDS] as $attribs) {
+        if ($section && $section != $attribs[PROP_SECTION]) {
             continue;
         }
 
-        $fieldName = $attribs["section"] . ":" . $attribs["name"];
+        $fieldName = $attribs[PROP_SECTION] . ":" . $attribs[PROP_NAME];
 
         // Prefix the export key with the section name when the section argument is unset
         $exportKey = false === $section
             ? $fieldName
-            : $attribs["name"];
+            : $attribs[PROP_NAME];
 
         if (is_array($option) && array_key_exists($fieldName, $option) && !empty($option[$fieldName])) {
             $values[$exportKey] = $option[$fieldName];
         } elseif ($setDefault) {
-            $values[$exportKey] = $attribs["default"];
+            $values[$exportKey] = $attribs[PROP_DEFAULT];
         } else {
             $values[$exportKey] = null;
         }
@@ -110,16 +144,21 @@ function isValidField($field)
         return false;
     }
 
-    $hasRequiredProps = isset($field["name"]) && isset($field["title"]) && isset($field["section"]);
+    $hasRequiredProps = isset($field[PROP_NAME]) && isset($field[PROP_TITLE]) && isset($field[PROP_SECTION]);
 
     if (!$hasRequiredProps) {
-            error_log("A field is missing one or more required property. Required properties are: name, title, section.");
+            error_log(sprintf(
+                "A field is missing one or more required property. Required properties are: %s, %s, %s.",
+                PROP_NAME,
+                PROP_TITLE,
+                PROP_SECTION
+            ));
             return false;
-    } elseif ($hasRequiredProps && !array_key_exists($field["section"], getSections())) {
+    } elseif ($hasRequiredProps && !array_key_exists($field[PROP_SECTION], getSections())) {
         error_log(sprintf(
             "Field `%s` is assigned to an undefined section `%s`",
-            $field["name"],
-            $field["section"]
+            $field[PROP_NAME],
+            $field[PROP_SECTION]
         ));
         return false;
     }
@@ -163,12 +202,12 @@ function sanitize($input)
     $settings = getSettings();
     $values = getFieldValues();
     $output = array(
-        "plugin_version" => getPluginVersion()
+        S_PLUGIN_VERSION => getPluginVersion()
     );
 
     // Filter and validate incoming data
-    foreach ($settings["fields"] as $attribs) {
-        $fieldName = $attribs["section"] . ":" . $attribs["name"];
+    foreach ($settings[S_FIELDS] as $attribs) {
+        $fieldName = $attribs[PROP_SECTION] . ":" . $attribs[PROP_NAME];
 
         // Skip any fields that don't exists
         if (!array_key_exists($fieldName, $input)) {
@@ -178,15 +217,15 @@ function sanitize($input)
         $transientValue = $input[$fieldName];
 
         // ____no_selection____ is the default value placeholder in selects
-        if ($transientValue === "____no_selection____") {
+        if ($transientValue === V_UNSELECTED_VALUE) {
             $transientValue = null;
         }
 
-        $validator = array_key_exists("validate", $attribs) && is_callable($attribs["validate"])
-            ? $attribs["validate"]
+        $validator = array_key_exists(PROP_VALIDATE, $attribs) && is_callable($attribs[PROP_VALIDATE])
+            ? $attribs[PROP_VALIDATE]
             : __NAMESPACE__ . "\\identity";
-        $sanitizer = array_key_exists("sanitize", $attribs) && is_callable($attribs["sanitize"])
-            ? $attribs["sanitize"]
+        $sanitizer = array_key_exists(PROP_SANITIZE, $attribs) && is_callable($attribs[PROP_SANITIZE])
+            ? $attribs[PROP_SANITIZE]
             : __NAMESPACE__ . "\\identity";
 
         $transientValue = call_user_func($validator, call_user_func($sanitizer, $transientValue), $attribs);
@@ -195,8 +234,8 @@ function sanitize($input)
     }
 
     // When version numbers don't match, do a migration
-    if ($values["plugin_version"] !== $output["plugin_version"]) {
-        $output = migrateVersion($output, $values["plugin_version"], $output["plugin_version"]);
+    if ($values[S_PLUGIN_VERSION] !== $output[S_PLUGIN_VERSION]) {
+        $output = migrateVersion($output, $values[S_PLUGIN_VERSION], $output[S_PLUGIN_VERSION]);
     }
 
     return $output;
@@ -207,10 +246,11 @@ function normaliseAttribNames($attribs)
     if (array_key_exists("sanitise", $attribs)) {
         error_log(sprintf(
             "Use spelling `sanitize` instead of `sanitise` for setting `%s` in section `%s`",
-            $attribs["name"], $attribs["section"]
+            $attribs[PROP_NAME],
+            $attribs[PROP_SECTION]
         ));
 
-        $attribs["sanitize"] = $attribs["sanitise"];
+        $attribs[PROP_SANITIZE] = $attribs["sanitise"];
         unset($attribs["sanitise"]);
     }
 
@@ -223,47 +263,48 @@ function registerSettings()
     $values = getFieldValues();
 
     register_setting(
-        $settings["setting_name"],
-        $settings["setting_name"],
+        $settings[S_SETTING_NAME],
+        $settings[S_SETTING_NAME],
         __NAMESPACE__ . "\\sanitize"
     );
 
-    foreach ($settings["sections"] as $section => $attribs) {
+    foreach ($settings[S_SECTIONS] as $section => $attribs) {
         add_settings_section(
             $section,
-            $attribs["title"],
+            $attribs[PROP_TITLE],
             AdminActions\getSectionRenderer(),
-            $settings["page_name"]
+            $settings[S_PAGE_NAME]
         );
     }
 
     $renderDefaults = array(
-        "type" => "text",
-        "className" => "",
-        "options" => null,
-        "default" => null,
-        "description" => null
+        PROP_TYPE => FIELD_TEXT,
+        PROP_CLASSNAME => "",
+        PROP_PLACEHOLDER => "",
+        PROP_OPTIONS => null,
+        PROP_DEFAULT => null,
+        PROP_DESCRIPTION => null
     );
 
-    foreach ($settings["fields"] as $attribs) {
-        $fieldName = $attribs["section"] . ":" . $attribs["name"];
+    foreach ($settings[S_FIELDS] as $attribs) {
+        $fieldName = $attribs[PROP_SECTION] . ":" . $attribs[PROP_NAME];
         $renderingArgs = array_merge(
             $renderDefaults,
             normaliseAttribNames($attribs),
             array(
-                "value" => $values[$fieldName],
-                "label_for" => $fieldName,
-                "field_name" => $fieldName,
-                "setting_name" => $settings["setting_name"]
+                PROP_VALUE => $values[$fieldName],
+                PROP_LABEL_FOR => $fieldName,
+                PROP_FIELD_NAME => $fieldName,
+                S_SETTING_NAME => $settings[S_SETTING_NAME]
             )
         );
 
         add_settings_field(
             $fieldName,
-            $attribs["title"],
+            $attribs[PROP_TITLE],
             AdminActions\getFieldRenderer(),
-            $settings["page_name"],
-            $attribs["section"],
+            $settings[S_PAGE_NAME],
+            $attribs[PROP_SECTION],
             $renderingArgs
         );
     }
