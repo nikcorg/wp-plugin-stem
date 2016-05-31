@@ -39,6 +39,18 @@ function migrateVersion($values, $fromVersion, $toVersion)
 
 /* There should be very little need to edit anything below this line */
 
+const FIELD_TEXT = "text";
+const FIELD_TEXT_MULTILINE = "textarea";
+const FIELD_URL = "url";
+const FIELD_EMAIL = "email";
+const FIELD_DATE = "date";
+const FIELD_TIME = "time";
+const FIELD_DATETIME = "datetime";
+const FIELD_NUMBER = "number";
+const FIELD_SELECT = "select";
+const FIELD_RADIO = "radio";
+const FIELD_CHECKBOX = "checkbox";
+
 add_action("admin_init", __NAMESPACE__ . "\\registerSettings");
 
 function isValidField($field)
