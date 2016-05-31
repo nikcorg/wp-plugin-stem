@@ -42,6 +42,7 @@ Other properties are:
 - number
 - email
 - url
+- date/datetime/time
 
 The following types require an `options` property. If it is an associative array, the value returned from `getFieldValues()` will be the key and not the value.
 

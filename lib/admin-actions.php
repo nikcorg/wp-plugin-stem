@@ -127,6 +127,9 @@ function renderField($args)
         case "email":
         case "text":
         case "url":
+        case "date":
+        case "datetime":
+        case "time":
             renderTextField($args);
             break;
 
