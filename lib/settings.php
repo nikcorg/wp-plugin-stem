@@ -4,11 +4,13 @@ namespace Plugins\Boilerplate\Settings;
 use Plugins\Boilerplate as Plugin;
 use Plugins\Boilerplate\AdminActions as AdminActions;
 
+const SECTION_DEFAULT = "default";
+
 function getSections()
 {
     // Add Setting sections here
     return array(
-        "section_name" => array(
+        SECTION_DEFAULT => array(
             "title" => "Section Title",
             "description" => "Optional section description"
         )
@@ -20,8 +22,8 @@ function getFields()
     // Add fields here
     return array(
         array(
-            "section" => "section_name",
-            "type" => "text",
+            "section" => SECTION_DEFAULT,
+            "type" => FIELD_TEXT,
             "name" => "field-name-in-markup",
             "title" => "Field title",
             "default" => "default value, also used as placeholder",
