@@ -233,7 +233,7 @@ function sanitize($input)
             call_user_func($sanitizer, $transientValue),
             $attribs,
             AdminActions\getErrorCallback()
-            );
+        );
 
         $output[$fieldName] = $transientValue;
     }
