@@ -116,7 +116,7 @@ function getFields()
 
 ## Settings Fields Sanitising And Validation
 
-Each field has separate properties for validation and sanitising to enable general purpose input sanitisers, e.g. string/number/url/date etc, while still retaining the option to have strict field specific validation.
+Each field has separate properties for validation and sanitising to enable general purpose input sanitisers, e.g. ensure a field is only number, or e.g. the WordPress provided filters such as [`wp_filter_nohtml_kses`](https://codex.wordpress.org/Function_Reference/wp_filter_nohtml_kses), while still retaining the option to have strict field specific validation.
 
 The sanitize callback receives as arguments only the field's value, while the validator also receives the fields attributes and an error callback.
 
@@ -129,6 +129,17 @@ The validation callback receives as it's third argument a callback that takes an
 ### Example
 
 ```php
+function getFields() {
+    return array(
+        array(
+            PROP_NAME => "my-text-field",
+            PROP_TITLE => "A text field",
+            PROP_DESCRIPTION => "Please keep content length between 20 and 40 characters.",
+            PROP_VALIDATE => "validateLength"
+        )
+    );
+}
+
 function validateLength($str, $attribs, $errorCb) {
     if (20 > strlen($str) || strlen($str) > 40) {
         $errorCb("The text should be between 20 and 40 characters in length.");
