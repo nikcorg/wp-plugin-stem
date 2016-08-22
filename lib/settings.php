@@ -83,6 +83,7 @@ const S_REQUIRE_CAPS = "require_caps";
 const S_SECTIONS = "sections";
 const S_FIELDS = "fields";
 const S_PLUGIN_VERSION = "plugin_version";
+const S_PRE_SAVE_FILTER = "pre_save_filter";
 
 /* Default unselected value for radio/checkbox/select */
 const V_UNSELECTED_VALUE = "____no_selection____";
@@ -99,7 +100,8 @@ function getSettings()
         S_DESCRIPTION => Plugin\PAGE_DESCRIPTION,
         S_REQUIRE_CAPS => Plugin\REQUIRE_CAPS,
         S_SECTIONS => getSections(),
-        S_FIELDS => array_filter(getFields(), __NAMESPACE__ . "\\isValidField")
+        S_FIELDS => array_filter(getFields(), __NAMESPACE__ . "\\isValidField"),
+        S_PRE_SAVE_FILTER => sprintf("pre_save_%s", ltrim(Plugin\SETTING_NAME, "_"))
     );
 }
 
@@ -243,7 +245,7 @@ function sanitize($input)
         $output = migrateVersion($output, $values[S_PLUGIN_VERSION], $output[S_PLUGIN_VERSION]);
     }
 
-    return $output;
+    return apply_filter($settings[S_PRE_SAVE_FILTER], $output);
 }
 
 function normaliseAttribNames($attribs)
