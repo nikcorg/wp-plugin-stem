@@ -3,7 +3,7 @@
  * Plugin name: Plugin Stem
  * Description: Not really a plugin in itself, but a starting point.
  * Author: Niklas Lindgren <nikc@iki.fi>
- * Version: 1.2.0
+ * Version: 1.3.0
  */
 namespace Plugins\Boilerplate;
 
