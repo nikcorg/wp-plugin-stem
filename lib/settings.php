@@ -53,6 +53,7 @@ const FIELD_NUMBER = "number";
 const FIELD_SELECT = "select";
 const FIELD_RADIO = "radio";
 const FIELD_CHECKBOX = "checkbox";
+const FIELD_TOGGLE = "toggle";
 
 /* Field/Section properties */
 const PROP_DEFAULT = "default";
@@ -86,6 +87,8 @@ const S_PLUGIN_VERSION = "plugin_version";
 
 /* Default unselected value for radio/checkbox/select */
 const V_UNSELECTED_VALUE = "____no_selection____";
+const V_LITERAL_FALSE = "____false____";
+const V_LITERAL_TRUE = "____true____";
 
 add_action("admin_init", __NAMESPACE__ . "\\registerSettings");
 
@@ -125,7 +128,9 @@ function getFieldValues($setDefault = false, $section = false)
             ? $fieldName
             : $attribs[PROP_NAME];
 
-        if (is_array($option) && array_key_exists($fieldName, $option) && !empty($option[$fieldName])) {
+        if ($attribs[PROP_TYPE] === FIELD_TOGGLE && !is_null($option[$fieldName])) {
+            $values[$exportKey] = !!$option[$fieldName];
+        } elseif (is_array($option) && array_key_exists($fieldName, $option) && !empty($option[$fieldName])) {
             $values[$exportKey] = $option[$fieldName];
         } elseif ($setDefault) {
             $values[$exportKey] = $attribs[PROP_DEFAULT];
@@ -216,9 +221,19 @@ function sanitize($input)
 
         $transientValue = $input[$fieldName];
 
-        // ____no_selection____ is the default value placeholder in selects
-        if ($transientValue === V_UNSELECTED_VALUE) {
-            $transientValue = null;
+        // Map symbolic values into their actual value
+        switch ($transientValue) {
+            case V_UNSELECTED_VALUE:
+                $transientValue = null;
+                break;
+
+            case V_LITERAL_TRUE:
+                $transientValue = 1;
+                break;
+
+            case V_LITERAL_FALSE:
+                $transientValue = 0;
+                break;
         }
 
         $validator = array_key_exists(PROP_VALIDATE, $attribs) && is_callable($attribs[PROP_VALIDATE])
