@@ -90,12 +90,15 @@ Other properties are:
 - email (`FIELD_EMAIL`)
 - url (`FIELD_URL`)
 - date/datetime/time (`FIELD_DATE`, `FIELD_DATETIME`, `FIELD_TIME`)
+- toggle/boolean (`FIELD_TOGGLE`)
 
 The following types require an `options` property. If it is an associative array, the value returned from `getFieldValues()` will be the key and not the value.
 
 - select (`FIELD_SELECT`)
 - radio (`FIELD_RADIO`)
 - checkbox (`FIELD_CHECKBOX`)
+
+A toggle/boolean type field will also use its `options` property when present, but it will default to Off/On. In case of boolean values, the values will require it's arguments in off state/on state order. Keys are ignored.
 
 #### Example
 
