@@ -121,13 +121,13 @@ function getFields()
 
 Each field has separate properties for validation and sanitising to enable general purpose input sanitisers, e.g. ensure a field is only number, or e.g. the WordPress provided filters such as [`wp_filter_nohtml_kses`](https://codex.wordpress.org/Function_Reference/wp_filter_nohtml_kses), while still retaining the option to have strict field specific validation.
 
-The sanitize callback receives as arguments only the field's value, while the validator also receives the fields attributes and an error callback.
+The sanitize callback receives as arguments only the field's value, while the validator also receives the fields attributes.
 
-Invoking order is sanitize -> validate, i.e. validate get's the output from sanitize. The value returned from sanitize is the value stored.
+Invoking order is sanitize -> validate, i.e. validate get's the output from sanitize. The value returned from validate is the value stored.
 
 ### Showing Validation Errors
 
-The validation callback receives as it's third argument a callback that takes an error message and error type (recognized values: "error", "update") as params. These validation errors are displayed during WordPress' `adminNotices` action.
+If validation fails, an exception should be thrown. The message from the exception will be flashed on the screen (during WordPress' `adminNotices` action), while the transient value returned from the sanitiser will be assigned and stored as the field value.
 
 ### Example
 
@@ -143,9 +143,9 @@ function getFields() {
     );
 }
 
-function validateLength($str, $attribs, $errorCb) {
+function validateLength($str, $attribs) {
     if (20 > strlen($str) || strlen($str) > 40) {
-        $errorCb("The text should be between 20 and 40 characters in length.");
+        throw new \Exception("The text should be between 20 and 40 characters in length.");
     }
 
     return $str;
