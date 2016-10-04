@@ -100,7 +100,6 @@ The following types require an `options` property. If it is an associative array
 
 A toggle/boolean type field will also use its `options` property when present, but it will default to Off/On. In case of boolean values, the values will require it's arguments in off state/on state order. Keys are ignored.
 
-
 #### Example
 
 ```php
