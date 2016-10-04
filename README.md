@@ -154,7 +154,7 @@ function validateLength($str, $attribs, $errorCb) {
 
 ## Change settings page location in the menu
 
-By default, `add_plugins_page()` is used for registering the settings page. This places your settings page under the Plugins menu which you may or may not want. Should you want to change the location of the settings page, switch to `add_submenu_page()`. 
+By default, [`add_plugins_page()`](https://developer.wordpress.org/reference/functions/add_plugins_page/) is used for registering the settings page. This places your settings page under the Plugins menu which you may or may not want. Should you want to change the location of the settings page, switch to [`add_submenu_page()`](https://developer.wordpress.org/reference/functions/add_submenu_page/). 
 
 ```php
 add_plugins_page(
