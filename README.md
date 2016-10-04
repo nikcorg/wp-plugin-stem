@@ -152,6 +152,33 @@ function validateLength($str, $attribs) {
 }
 ```
 
+## Change settings page location in the menu
+
+By default, [`add_plugins_page()`](https://developer.wordpress.org/reference/functions/add_plugins_page/) is used for registering the settings page. This places your settings page under the Plugins menu which you may or may not want. Should you want to change the location of the settings page, switch to [`add_submenu_page()`](https://developer.wordpress.org/reference/functions/add_submenu_page/). 
+
+```php
+add_plugins_page(
+  $settings[Settings\S_PAGE_TITLE],
+  $settings[Settings\S_MENU_TITLE],
+  $settings[Settings\S_REQUIRE_CAPS],
+  $settings[Settings\S_PAGE_NAME],
+  getPageRenderer()
+);
+
+// becomes 
+
+add_submenu_page(
+  'edit.php?post_type=YOUR_CUSTOM_POST_TYPE', // the parent slug which your settings page will use
+  $settings[Settings\S_PAGE_TITLE],
+  $settings[Settings\S_MENU_TITLE],
+  $settings[Settings\S_REQUIRE_CAPS],
+  $settings[Settings\S_PAGE_NAME],
+  getPageRenderer()
+);
+```
+
+All applicable options for the parent slug can be found in [user contributed notes - add_submenu_page()](https://developer.wordpress.org/reference/functions/add_submenu_page/#user-contributed-notes).
+
 ## Version Updates
 
 If you need to do work between version updates, add your work to the `migrateVersion()` function in `settings.php`. It is invoked when settings are saved and the previous version differs from the current version. The default function is a no-op.
