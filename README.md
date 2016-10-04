@@ -177,7 +177,7 @@ add_submenu_page(
 );
 ```
 
-All available options can be found in [user contributed notes - add_submenu_page()](https://developer.wordpress.org/reference/functions/add_submenu_page/#user-contributed-notes).
+All applicable options for the parent slug can be found in [user contributed notes - add_submenu_page()](https://developer.wordpress.org/reference/functions/add_submenu_page/#user-contributed-notes).
 
 ## Version Updates
 
