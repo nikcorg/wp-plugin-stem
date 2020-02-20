@@ -1,6 +1,6 @@
 # Boilerplate Stuff For WordPress Plugin Development
 
-I've had the dubious pleasure of creating a few WordPress plugins. Setting them up was never something to look forward to, so I gathered recurring features into a single place. A lot of this code is code I believe should be a shared dependency, or part of WordPress core, but this is probably the second best option.
+I've had the dubious pleasure of creating a few WordPress plugins. Setting them up was never something to look forward to, so I gathered recurring features into a single place. A lot of this code is code I believe should be a shared dependency, or part of WordPress core, but this is probably a least worst option.
 
 Very little here is completely original code, but has rather been compiled and paraphrased from many sources here and there. I'd give due credit, but having waded through what seems like gigabytes of WordPress related blog posts to find all that I need, I'm truly not capable to do so: Credits go to the entire WordPress community.
 
@@ -121,9 +121,9 @@ function getFields()
 
 Each field has separate properties for validation and sanitising to enable general purpose input sanitisers, e.g. ensure a field is only number, or e.g. the WordPress provided filters such as [`wp_filter_nohtml_kses`](https://codex.wordpress.org/Function_Reference/wp_filter_nohtml_kses), while still retaining the option to have strict field specific validation.
 
-The sanitize callback receives as arguments only the field's value, while the validator also receives the fields attributes.
+The sanitize callback receives as arguments only the field's value, while the validator also receives the field's attributes.
 
-Invoking order is sanitize -> validate, i.e. validate get's the output from sanitize. The value returned from validate is the value stored.
+Invoking order is sanitize -> validate, i.e. validate gets the output from sanitize. The value returned from validate is the value stored.
 
 ### Showing Validation Errors
 
